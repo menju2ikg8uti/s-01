@@ -23,31 +23,20 @@ class MainActivity : AppCompatActivity() {
         videoList = assets.list("video")?.toList() ?: emptyList()
         recyclerView.adapter = VideoAdapter(videoList, this)
 
-        // Infinite scroll
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(rv, dx, dy)
-                val lastVisible = layoutManager.findLastVisibleItemPosition()
-                if (lastVisible == videoList.size - 1) {
-                    recyclerView.scrollToPosition(0)
-                }
-            }
-        })
+        // scroll ke tengah untuk infinite loop aman
+        recyclerView.scrollToPosition(Int.MAX_VALUE / 2)
 
-        // Tombol scroll atas
         val btnUp: Button = findViewById(R.id.btnUp)
+        val btnDown: Button = findViewById(R.id.btnDown)
+
         btnUp.setOnClickListener {
             val firstVisible = layoutManager.findFirstVisibleItemPosition()
-            val prev = if (firstVisible > 0) firstVisible - 1 else videoList.size - 1
-            recyclerView.smoothScrollToPosition(prev)
+            recyclerView.smoothScrollToPosition(firstVisible - 1)
         }
 
-        // Tombol scroll bawah
-        val btnDown: Button = findViewById(R.id.btnDown)
         btnDown.setOnClickListener {
             val lastVisible = layoutManager.findLastVisibleItemPosition()
-            val next = if (lastVisible < videoList.size - 1) lastVisible + 1 else 0
-            recyclerView.smoothScrollToPosition(next)
+            recyclerView.smoothScrollToPosition(lastVisible + 1)
         }
     }
 }
