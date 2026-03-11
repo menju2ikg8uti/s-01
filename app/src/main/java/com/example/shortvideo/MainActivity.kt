@@ -1,17 +1,15 @@
 package com.example.shortvideo
 
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
-import android.widget.VideoView
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var videoList: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,12 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyclerView = findViewById(R.id.recyclerView)
-
-        // Scan video folder in assets
-        videoList = assets.list("video")?.toList() ?: emptyList()
-
-        val layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+
+        videoList = assets.list("video")?.toList() ?: emptyList()
         recyclerView.adapter = VideoAdapter(videoList, this)
 
         // Infinite scroll
@@ -37,5 +33,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        // Tombol scroll atas
+        val btnUp: Button = findViewById(R.id.btnUp)
+        btnUp.setOnClickListener {
+            val firstVisible = layoutManager.findFirstVisibleItemPosition()
+            val prev = if (firstVisible > 0) firstVisible - 1 else videoList.size - 1
+            recyclerView.smoothScrollToPosition(prev)
+        }
+
+        // Tombol scroll bawah
+        val btnDown: Button = findViewById(R.id.btnDown)
+        btnDown.setOnClickListener {
+            val lastVisible = layoutManager.findLastVisibleItemPosition()
+            val next = if (lastVisible < videoList.size - 1) lastVisible + 1 else 0
+            recyclerView.smoothScrollToPosition(next)
+        }
     }
 }
