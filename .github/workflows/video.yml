@@ -1,0 +1,32 @@
+name: video 144p
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+
+      - name: ffmpeg setup
+        uses: FedericoCarboni/setup-ffmpeg@v3
+
+      - name: Encode videos to H.264 + AAC
+        run: |
+          mkdir -p encoded_videos
+          for f in app/src/main/assets/video/*.mp4; do
+            filename=$(basename "$f")
+            ffmpeg -i "$f" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 128k "encoded_videos/$filename"
+          done
+          cp encoded_videos/* app/src/main/assets/video/
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add app
+          git commit -m "move 180-202 scripts to src/net"
+          git push
