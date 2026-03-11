@@ -1,4 +1,4 @@
-package com.example.androidautobuildapk
+package com.example.shortvideo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
