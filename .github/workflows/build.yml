@@ -11,18 +11,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v5
 
-      - name: ffmpeg setup
-        uses: FedericoCarboni/setup-ffmpeg@v3
-
-      - name: Encode videos to H.264 + AAC 144p
-        run: |
-          mkdir -p encoded_videos
-          for f in app/src/main/assets/video/*.mp4; do
-            filename=$(basename "$f")
-            ffmpeg -i "$f" -c:v libx264 -preset fast -crf 23 -vf "scale=-2:144" -c:a aac -b:a 128k "encoded_videos/$filename"
-          done
-          cp encoded_videos/* app/src/main/assets/video/
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -31,9 +19,6 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Clean build
-        run: ./gradlew clean
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace --no-build-cache
