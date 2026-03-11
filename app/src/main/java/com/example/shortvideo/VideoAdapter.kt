@@ -1,21 +1,20 @@
 package com.example.shortvideo
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.MediaController
+import android.widget.TextView
 import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
+import java.io.File
 
-class VideoAdapter(private val context: Context, private val videoList: List<VideoModel>) :
+class VideoAdapter(private val videos: List<String>, private val context: Context) :
     RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
 
-    inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val videoView: VideoView = itemView.findViewById(R.id.videoView)
-        val container: FrameLayout = itemView.findViewById(R.id.videoContainer)
+        val txtFileName: TextView = itemView.findViewById(R.id.txtFileName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -25,23 +24,31 @@ class VideoAdapter(private val context: Context, private val videoList: List<Vid
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        val video = videoList[position]
+        val fileName = videos[position]
 
-        val uri = Uri.parse("android.resource://${context.packageName}/raw/${video.fileName}")
-        holder.videoView.setVideoURI(uri)
+        // tampilkan nama file
+        holder.txtFileName.text = fileName
 
-        val mediaController = MediaController(context)
-        mediaController.setAnchorView(holder.videoView)
-        holder.videoView.setMediaController(null) // Hide controller
-        holder.videoView.setOnPreparedListener {
-            it.isLooping = true
-            holder.videoView.start()
+        // copy video dari assets ke cache agar bisa play
+        val file = File(context.cacheDir, fileName)
+        if (!file.exists()) {
+            context.assets.open("video/$fileName").use { input ->
+                file.outputStream().use { output -> input.copyTo(output) }
+            }
         }
 
+        holder.videoView.setVideoPath(file.absolutePath)
+        holder.videoView.start()
+
+        // klik untuk pause/play
         holder.videoView.setOnClickListener {
-            if (holder.videoView.isPlaying) holder.videoView.pause() else holder.videoView.start()
+            if (holder.videoView.isPlaying) holder.videoView.pause()
+            else holder.videoView.start()
         }
+
+        // loop video
+        holder.videoView.setOnCompletionListener { holder.videoView.start() }
     }
 
-    override fun getItemCount(): Int = videoList.size
+    override fun getItemCount(): Int = videos.size
 }
