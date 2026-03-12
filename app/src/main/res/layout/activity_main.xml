@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btnUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UP"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_below="@id/btnUp"
+        android:layout_above="@id/btnDown"/>
 
-    <!-- Tombol scroll atas -->
-    <Button
-        android:id="@+id/btnUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="▲"
-        android:layout_margin="16dp"
-        android:background="#66000000"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_gravity="top|center_horizontal" />
-
-    <!-- Tombol scroll bawah -->
     <Button
         android:id="@+id/btnDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="▼"
-        android:layout_margin="16dp"
-        android:background="#66000000"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:layout_gravity="bottom|center_horizontal" />
+        android:text="DOWN"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
-</FrameLayout>
+</RelativeLayout>
