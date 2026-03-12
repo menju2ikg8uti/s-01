@@ -31,16 +31,20 @@ class MainActivity : AppCompatActivity() {
 
         btnUp.setOnClickListener {
             val firstVisible = layoutManager.findFirstVisibleItemPosition()
-            val holder = recyclerView.findViewHolderForAdapterPosition(firstVisible) as? VideoAdapter.VideoViewHolder
-            holder?.videoView?.pause()
+            pauseCurrentVideo(firstVisible)
             recyclerView.smoothScrollToPosition(firstVisible - 1)
         }
 
         btnDown.setOnClickListener {
             val lastVisible = layoutManager.findLastVisibleItemPosition()
-            val holder = recyclerView.findViewHolderForAdapterPosition(firstVisible) as? VideoAdapter.VideoViewHolder
-            holder?.videoView?.pause()
+            pauseCurrentVideo(lastVisible)
             recyclerView.smoothScrollToPosition(lastVisible + 1)
         }
+    }
+
+    private fun pauseCurrentVideo(position: Int) {
+        val holder =
+            recyclerView.findViewHolderForAdapterPosition(position) as? VideoAdapter.VideoViewHolder
+        holder?.videoView?.pause()
     }
 }
