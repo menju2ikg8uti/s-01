@@ -25,7 +25,7 @@ jobs:
 
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-build-cache
+        run: ./gradlew assembleDebug --stacktrace --no-build-cache --info
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v5
