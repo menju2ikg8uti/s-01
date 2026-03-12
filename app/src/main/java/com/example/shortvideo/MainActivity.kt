@@ -1,50 +1,43 @@
 package com.example.shortvideo
 
-import android.os.Bundle
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.content.Context
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.VideoView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class MainActivity : AppCompatActivity() {
+class VideoAdapter(private val videos: List<String>, private val context: Context) :
+    RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var videoList: List<String>
+    inner class VideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val videoView: VideoView = view.findViewById(R.id.videoView)
+        val tvName: TextView = view.findViewById(R.id.tvVideoName)
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
+        return VideoViewHolder(view)
+    }
 
-        recyclerView = findViewById(R.id.recyclerView)
-        layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+    override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
+        val videoFile = videos[position % videos.size] // loop jika hanya 2 video
+        holder.tvName.text = videoFile
 
-        videoList = assets.list("video")?.toList() ?: emptyList()
-        recyclerView.adapter = VideoAdapter(videoList, this)
-
-        // scroll ke tengah untuk infinite loop aman
-        recyclerView.scrollToPosition(Int.MAX_VALUE / 2)
-
-        val btnUp: Button = findViewById(R.id.btnUp)
-        val btnDown: Button = findViewById(R.id.btnDown)
-
-        btnUp.setOnClickListener {
-            val firstVisible = layoutManager.findFirstVisibleItemPosition()
-            pauseCurrentVideo(firstVisible)
-            recyclerView.smoothScrollToPosition(firstVisible - 1)
+        val uri = Uri.parse("file:///android_asset/video/$videoFile")
+        holder.videoView.setVideoURI(uri)
+        holder.videoView.setOnPreparedListener {
+            it.isLooping = true
+            holder.videoView.start()
         }
 
-        btnDown.setOnClickListener {
-            val lastVisible = layoutManager.findLastVisibleItemPosition()
-            pauseCurrentVideo(lastVisible)
-            recyclerView.smoothScrollToPosition(lastVisible + 1)
+        holder.videoView.setOnClickListener {
+            if (holder.videoView.isPlaying) holder.videoView.pause() else holder.videoView.start()
         }
     }
 
-    private fun pauseCurrentVideo(position: Int) {
-        val holder =
-            recyclerView.findViewHolderForAdapterPosition(position) as? VideoAdapter.VideoViewHolder
-        holder?.videoView?.pause()
-    }
+    override fun getItemCount(): Int = Integer.MAX_VALUE // infinite scroll
 }
