@@ -1,13 +1,14 @@
 package com.example.shortvideo
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.VideoView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.io.File
+import java.io.FileOutputStream
 
 class VideoAdapter(private val videos: List<String>, private val context: Context) :
     RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
@@ -28,8 +29,16 @@ class VideoAdapter(private val videos: List<String>, private val context: Contex
         holder.tvName.text = videoFile
 
         try {
-            val afd = context.assets.openFd("video/$videoFile")
-            holder.videoView.setVideoURI(Uri.parse("file:///android_asset/video/$videoFile"))
+            // Copy video dari assets ke cacheDir supaya VideoView bisa putar
+            val file = File(context.cacheDir, videoFile)
+            context.assets.open("video/$videoFile").use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            // Set video path ke file di cache
+            holder.videoView.setVideoPath(file.absolutePath)
             holder.videoView.setOnPreparedListener {
                 it.isLooping = true
                 holder.videoView.start()
