@@ -21,11 +21,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Clean build
-        run: ./gradlew clean
+        run: ./gradlew clean --no-build-cache
 
+      - name: Refresh dependencies
+        run: ./gradlew build --refresh-dependencies --dry-run
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-build-cache
+        run: ./gradlew assembleDebug --stacktrace --no-build-cache 
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v5
