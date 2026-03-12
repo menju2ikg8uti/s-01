@@ -24,7 +24,7 @@ class VideoAdapter(private val videos: List<String>, private val context: Contex
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        val videoFile = videos[position % videos.size] // loop jika hanya 2 video
+        val videoFile = videos[position % videos.size] // loop video
         holder.tvName.text = videoFile
 
         val uri = Uri.parse("file:///android_asset/video/$videoFile")
