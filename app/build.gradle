@@ -43,6 +43,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+    implementation 'com.google.android.gms:play-services-ads:22.3.0'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1' // downgrade dari 1.7.0
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // downgrade dari 2.2.1
