@@ -31,11 +31,15 @@ class MainActivity : AppCompatActivity() {
 
         btnUp.setOnClickListener {
             val firstVisible = layoutManager.findFirstVisibleItemPosition()
+            val holder = recyclerView.findViewHolderForAdapterPosition(firstVisible) as? VideoAdapter.VideoViewHolder
+            holder?.videoView?.pause()
             recyclerView.smoothScrollToPosition(firstVisible - 1)
         }
 
         btnDown.setOnClickListener {
             val lastVisible = layoutManager.findLastVisibleItemPosition()
+            val holder = recyclerView.findViewHolderForAdapterPosition(firstVisible) as? VideoAdapter.VideoViewHolder
+            holder?.videoView?.pause()
             recyclerView.smoothScrollToPosition(lastVisible + 1)
         }
     }
